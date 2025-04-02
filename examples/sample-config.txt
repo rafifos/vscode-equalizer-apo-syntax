@@ -1,0 +1,58 @@
+# Equalizer APO Sample Configuration File
+# This file demonstrates the various commands and syntax
+
+Device: High Definition Audio Device Speakers; Benchmark
+
+# Global preamp to prevent clipping
+Preamp: -6.5 dB
+
+# Include another configuration file
+Include: eq-presets.txt
+
+# Channel selection for stereo output
+Channel: L R
+
+# Peaking filters for both channels
+Filter 1: ON PK Fc 50 Hz Gain -3.0 dB Q 10.00
+Filter 2: ON PEQ Fc 100 Hz Gain 1.0 dB BW Oct 0.167
+Filter 3: ON Modal Fc 200 Hz Gain 2.5 dB Q 5.41 T60 target 100 ms
+
+# Low and high shelf filters
+Filter 4: ON LS Fc 300 Hz Gain 5.0 dB
+Filter 5: ON HS Fc 10000 Hz Gain -3.0 dB
+
+# Channel-specific processing
+Channel: L
+# Additional preamp for left channel only
+Preamp: -2 dB
+# Low-pass filter only for left channel
+Filter 1: ON LP Fc 8000 Hz
+
+Channel: R
+# High-pass filter only for right channel
+Filter 1: ON HP Fc 30 Hz
+
+# Conditional processing based on sample rate
+If: sampleRate == 44100
+  # Settings for 44.1 kHz
+  GraphicEQ: 25 6; 40 4.5; 63 3; 100 1.5; 160 0; 250 0; 400 0; 630 0; 1000 0; 1600 0; 2500 0; 4000 0; 6300 1.5; 10000 3; 16000 3
+ElseIf: sampleRate == 48000
+  # Settings for 48 kHz
+  GraphicEQ: 20 5; 40 4; 60 3; 100 2; 200 1; 400 0; 800 0; 1600 0; 3200 0; 6400 1; 12800 2; 20000 3
+Else:
+  # Default settings for other sample rates
+  Include: default-eq.txt
+EndIf:
+
+# Using expressions for dynamic configuration
+Eval: maxGain = 3.0; minGain = -6.0
+Filter: ON PK Fc 500 Hz Gain `(maxGain + minGain) / 2` dB Q 1.41
+
+# Delay for time alignment
+Delay: 5.5 ms
+
+# Copy channels for custom mixing
+Copy: LFE=0.7*L+0.7*R
+
+# Convolution with impulse response
+Convolution: room-correction.wav

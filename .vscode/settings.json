@@ -1,0 +1,8 @@
+{
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "files.associations": {
+    "**/examples/*.txt": "equalizer-apo"
+  }
+}

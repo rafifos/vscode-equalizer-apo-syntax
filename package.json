@@ -1,0 +1,80 @@
+{
+  "name": "equalizer-apo-syntax",
+  "displayName": "Equalizer APO Syntax",
+  "description": "Syntax highlighting for Equalizer APO configuration files",
+  "version": "0.2.0",
+  "publisher": "rafifos",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": ["Programming Languages"],
+  "keywords": ["equalizer", "apo", "audio", "eq", "configuration"],
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#C80000",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/equalizer-apo-syntax.git"
+  },
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "equalizer-apo",
+        "aliases": ["Equalizer APO", "equalizer-apo"],
+        "extensions": [".txt"],
+        "configuration": "./language-configuration.json",
+        "filenamePatterns": ["**/EqualizerAPO/config/**/*.txt"]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "equalizer-apo",
+        "scopeName": "source.equalizer-apo",
+        "path": "./syntaxes/equalizer-apo.tmLanguage.json"
+      }
+    ],
+    "configurationDefaults": {
+      "[equalizer-apo]": {
+        "editor.wordWrap": "on",
+        "editor.rulers": [80]
+      }
+    },
+    "commands": [
+      {
+        "command": "equalizer-apo-syntax.createNewConfig",
+        "title": "Equalizer APO: Create New Configuration File"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "equalizer-apo-syntax.createNewConfig",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "activationEvents": [
+    "onLanguage:equalizer-apo",
+    "onCommand:equalizer-apo-syntax.createNewConfig"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "check": "biome check --write",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/node": "^16.18.126",
+    "@types/vscode": "^1.60.0",
+    "@vscode/vsce": "^3.3.2",
+    "typescript": "^4.9.5"
+  }
+}

@@ -1,0 +1,13 @@
+# Ignore files and directories that should not be included in the VSIX package
+# This file is used to exclude files and directories from the VSIX package
+# when publishing the extension to the Visual Studio Code Marketplace
+# See https://code.visualstudio.com/api/working-with-extensions/publishing-extension#using-.vscodeignore
+
+.gitignore
+biome.json
+tsconfig.json
+
+.vscode/**
+examples/**
+node_modules/**
+src/**

@@ -1,0 +1,227 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Equalizer APO",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#commands" },
+    { "include": "#expressions" },
+    { "include": "#invalid-lines" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.equalizer-apo",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "invalid-lines": {
+      "patterns": [
+        {
+          "match": "^(?!\\s*(?:\\w+\\s*:|#)).*$",
+          "name": "comment.line.ignored.equalizer-apo"
+        }
+      ]
+    },
+    "commands": {
+      "patterns": [
+        {
+          "match": "^\\s*(Preamp)\\s*:\\s*([-+]?\\d+(\\.\\d+)?)\\s*(dB)\\b",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "constant.numeric.equalizer-apo" },
+            "4": { "name": "constant.language.unit.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(Filter(?:\\s+\\d+)?)\\s*:\\s*(ON)\\s+(PK|Modal|PEQ|LP|LPQ|HP|HPQ|BP|LS|LSC|HS|HSC|LS\\s+6dB|LS\\s+12dB|HS\\s+6dB|HS\\s+12dB|NO|AP|IIR)\\b",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "constant.language.equalizer-apo" },
+            "3": { "name": "entity.name.type.filter.equalizer-apo" }
+          }
+        },
+        {
+          "match": "\\b(Order)\\s+(\\d+)\\b",
+          "captures": {
+            "1": { "name": "variable.parameter.equalizer-apo" },
+            "2": { "name": "constant.numeric.equalizer-apo" }
+          }
+        },
+        {
+          "match": "\\b(Coefficients)\\b",
+          "name": "variable.parameter.equalizer-apo"
+        },
+        {
+          "match": "\\b(Fc)\\s+(\\d+(\\.\\d+)?)\\s+(Hz)\\b",
+          "captures": {
+            "1": { "name": "variable.parameter.equalizer-apo" },
+            "2": { "name": "constant.numeric.equalizer-apo" },
+            "4": { "name": "constant.language.unit.equalizer-apo" }
+          }
+        },
+        {
+          "match": "\\b(Gain)\\s+([-+]?\\d+(\\.\\d+)?)\\s+(dB)\\b",
+          "captures": {
+            "1": { "name": "variable.parameter.equalizer-apo" },
+            "2": { "name": "constant.numeric.equalizer-apo" },
+            "4": { "name": "constant.language.unit.equalizer-apo" }
+          }
+        },
+        {
+          "match": "\\b(Q|BW\\s+Oct)\\s+(\\d+(\\.\\d+)?)\\b",
+          "captures": {
+            "1": { "name": "variable.parameter.equalizer-apo" },
+            "2": { "name": "constant.numeric.equalizer-apo" }
+          }
+        },
+        {
+          "match": "\\b(T60\\s+target)\\s+(\\d+(\\.\\d+)?)\\s+(ms)\\b",
+          "captures": {
+            "1": { "name": "variable.parameter.equalizer-apo" },
+            "2": { "name": "constant.numeric.equalizer-apo" },
+            "4": { "name": "constant.language.unit.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(Delay)\\s*:\\s*(\\d+(\\.\\d+)?)\\s*(ms|samples)\\b",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "constant.numeric.equalizer-apo" },
+            "4": { "name": "constant.language.unit.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(Copy)\\s*:\\s*([^=]+)=(.+)",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "variable.other.equalizer-apo" },
+            "3": { "name": "string.unquoted.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(GraphicEQ)\\s*:",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" }
+          }
+        },
+        {
+          "match": "(\\d+(\\.\\d+)?)\\s+([-+]?\\d+(\\.\\d+)?)\\s*;",
+          "captures": {
+            "1": { "name": "constant.numeric.frequency.equalizer-apo" },
+            "3": { "name": "constant.numeric.gain.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(Convolution)\\s*:\\s*(.+)",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "string.unquoted.filename.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(Include)\\s*:\\s*(.+)",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "string.unquoted.filename.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(Device)\\s*:\\s*(.+)",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "string.unquoted.device.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(Channel)\\s*:\\s*(all|[LRCFESRlrcfesr0-9\\s]+)",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "variable.other.channel.equalizer-apo" }
+          }
+        },
+        {
+          "match": "\\b(L|R|C|LFE|RL|RR|RC|SL|SR|all)\\b",
+          "name": "constant.language.channel.equalizer-apo"
+        },
+        {
+          "match": "^\\s*(Stage)\\s*:\\s*(pre-mix|post-mix|capture)(?:\\s+(pre-mix|post-mix|capture))?",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "constant.language.stage.equalizer-apo" },
+            "3": { "name": "constant.language.stage.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(If|ElseIf)\\s*:\\s*(.+)",
+          "captures": {
+            "1": { "name": "keyword.control.conditional.equalizer-apo" },
+            "2": { "name": "meta.expression.equalizer-apo" }
+          }
+        },
+        {
+          "match": "^\\s*(Else|EndIf)\\s*:",
+          "name": "keyword.control.conditional.equalizer-apo"
+        },
+        {
+          "match": "^\\s*(Eval)\\s*:\\s*(.+)",
+          "captures": {
+            "1": { "name": "keyword.control.equalizer-apo" },
+            "2": { "name": "meta.expression.equalizer-apo" }
+          }
+        }
+      ]
+    },
+    "expressions": {
+      "patterns": [
+        {
+          "begin": "`",
+          "end": "`",
+          "name": "meta.embedded.inline.expression.equalizer-apo",
+          "patterns": [{ "include": "#expression-content" }]
+        }
+      ]
+    },
+    "expression-content": {
+      "patterns": [
+        {
+          "match": "\\b(e|pi|inputChannelCount|outputChannelCount|sampleRate|deviceName|connectionName|deviceGuid|stage)\\b",
+          "name": "constant.language.equalizer-apo"
+        },
+        {
+          "match": "\\b(and|or|xor|true|false)\\b",
+          "name": "keyword.operator.logical.equalizer-apo"
+        },
+        {
+          "match": "\\b(abs|sin|cos|tan|sinh|cosh|tanh|ln|log|log10|exp|sqrt|min|max|sum|str2dbl|strlen|tolower|toupper|sizeof|regexSearch|regexReplace|readRegString|readRegDWORD)\\b",
+          "name": "support.function.equalizer-apo"
+        },
+        {
+          "match": "==|!=|<=|>=|<|>|\\+|-|\\*|\\/|\\^|=|\\+=|-=|\\*=|\\/=|\\?|:|\\[|\\]|\\{|\\}|$$|$$|,|;|&|\\|",
+          "name": "keyword.operator.equalizer-apo"
+        },
+        {
+          "match": "<<|>>",
+          "name": "keyword.operator.bitshift.equalizer-apo"
+        },
+        {
+          "match": "\\b\\d+(\\.\\d+)?\\b",
+          "name": "constant.numeric.equalizer-apo"
+        },
+        {
+          "begin": "\"",
+          "end": "\"",
+          "name": "string.quoted.double.equalizer-apo",
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.equalizer-apo"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "scopeName": "source.equalizer-apo"
+}
