@@ -13,13 +13,17 @@
         {
           "name": "comment.line.number-sign.equalizer-apo",
           "match": "#.*$"
+        },
+        {
+          "name": "comment.line.semicolon.equalizer-apo",
+          "match": ";.*$"
         }
       ]
     },
     "invalid-lines": {
       "patterns": [
         {
-          "match": "^(?!\\s*(?:\\w+\\s*:|#)).*$",
+          "match": "^(?!\\s*(?:\\w+\\s*:|#|;)).*$",
           "name": "comment.line.ignored.equalizer-apo"
         }
       ]
@@ -71,6 +75,13 @@
         },
         {
           "match": "\\b(Q|BW\\s+Oct)\\s+(\\d+(\\.\\d+)?)\\b",
+          "captures": {
+            "1": { "name": "variable.parameter.equalizer-apo" },
+            "2": { "name": "constant.numeric.equalizer-apo" }
+          }
+        },
+        {
+          "match": "\\b(S)\\s+(\\d+(\\.\\d+)?)\\b",
           "captures": {
             "1": { "name": "variable.parameter.equalizer-apo" },
             "2": { "name": "constant.numeric.equalizer-apo" }

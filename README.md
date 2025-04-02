@@ -3,11 +3,11 @@
 This extension provides syntax highlighting for Equalizer APO configuration files, making it easier to read and edit your audio processing configurations.
 
 ![Syntax Highlighting Example](images/syntax-example.png)
-> Theme: Cattpuccin Frappé, Font: Iosevka (Custom) 16
 
 ## Features
 
 - Comprehensive syntax highlighting for all Equalizer APO commands
+- Support for both hash (#) and semicolon (;) comments
 - Support for inline expressions with mathematical and logical operators
 - Highlighting for filter types, parameters, and values
 - Recognition of channel identifiers and stage names
@@ -41,6 +41,7 @@ This extension provides syntax highlighting for Equalizer APO configuration file
 
 The extension automatically recognizes files with the following patterns:
 
+- `config.txt` in any directory
 - Any `.txt` file in a directory path containing `EqualizerAPO/config/`
 
 For other files, you can manually set the language mode to "Equalizer APO" by:
@@ -63,6 +64,7 @@ Available templates:
 - Stereo Configuration
 - Surround Configuration
 - Advanced Configuration
+- Headphone EQ
 
 ### Editing Features
 
@@ -105,8 +107,19 @@ Equalizer APO supports a wide range of filter types, all of which are highlighte
 - **LP/LPQ**: Low-pass filters
 - **HP/HPQ**: High-pass filters
 - **BP**: Band-pass filter
-- **LS/LSC**: Low-shelf filters
-- **HS/HSC**: High-shelf filters
+- **LS/LSC**: Low-shelf filters (with optional S parameter for slope)
+- **HS/HSC**: High-shelf filters (with optional S parameter for slope)
 - **NO**: Notch filter
 - **AP**: All-pass filter
 - **IIR**: Custom IIR filter with coefficients
+
+## Filter Parameters
+
+The extension provides detailed documentation and completions for all filter parameters:
+
+- **Fc**: Center/cutoff frequency in Hz
+- **Gain**: Boost or cut in dB
+- **Q**: Quality factor (controls filter width)
+- **BW Oct**: Bandwidth in octaves (alternative to Q)
+- **S**: Slope for shelf filters (0.71 = standard 1st order)
+- **T60 target**: Decay time for Modal filters in ms

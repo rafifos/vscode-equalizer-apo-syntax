@@ -2,7 +2,30 @@
 
 All notable changes to the "equalizer-apo-syntax" extension will be documented in this file.
 
-## [0.2.0] - 2025-04-02
+## [0.3.0] - 2025-04-02
+
+### Added
+
+- Support for semicolon (;) comments in addition to hash (#) comments
+- Added support for the "S" parameter (slope) for shelf filters
+- Enhanced filter parameter documentation and completions
+- Improved parameter suggestions based on filter type context
+- Added more detailed documentation for all filter parameters
+- Added more examples in documentation showing different parameter formats
+
+### Changed
+
+- Updated syntax highlighting to better match real-world Equalizer APO configurations
+- Improved filter parameter completions to avoid suggesting incompatible parameters
+- Enhanced documentation for shelf filters to include slope parameter information
+- Updated invalid line detection to recognize semicolon comments
+
+### Fixed
+
+- Fixed handling of shelf filter parameters in completions
+- Fixed parameter suggestions to avoid duplicates and incompatible combinations
+
+## [0.3.0] - 2025-04-02
 
 ### Added
 
@@ -27,7 +50,7 @@ All notable changes to the "equalizer-apo-syntax" extension will be documented i
 - Fixed handling of invalid lines to match Equalizer APO's behavior of silently ignoring them
 - Fixed escape sequences in syntax highlighting patterns
 
-## [0.2.0] - 2025-04-02
+## [0.1.0] - 2025-04-02
 
 - Initial release
 - Basic syntax highlighting for Equalizer APO configuration files

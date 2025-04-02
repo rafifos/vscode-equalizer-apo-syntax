@@ -36,12 +36,12 @@ Preamp: -6 dB
 # Left channel configuration
 Channel: L
 Filter 1: ON PK Fc 100 Hz Gain 2.0 dB Q 1.0
-Filter 2: ON HS Fc 10000 Hz Gain -1.5 dB
+Filter 2: ON HS Fc 10000 Hz Gain -1.5 dB S 0.71
 
 # Right channel configuration
 Channel: R
 Filter 1: ON PK Fc 100 Hz Gain 2.0 dB Q 1.0
-Filter 2: ON HS Fc 10000 Hz Gain -1.5 dB
+Filter 2: ON HS Fc 10000 Hz Gain -1.5 dB S 0.71
 
 # Add your configuration below
 `,
@@ -87,17 +87,17 @@ Preamp: -6 dB
 
 # Sample rate dependent processing
 If: sampleRate == 44100
-  # Settings for 44.1 kHz
-  Eval: maxFreq = 20000
+    # Settings for 44.1 kHz
+    Eval: maxFreq = 20000
 ElseIf: sampleRate == 48000
-  # Settings for 48 kHz
-  Eval: maxFreq = 22000
+    # Settings for 48 kHz
+    Eval: maxFreq = 22000
 ElseIf: sampleRate == 96000
-  # Settings for 96 kHz
-  Eval: maxFreq = 40000
+    # Settings for 96 kHz
+    Eval: maxFreq = 40000
 Else:
-  # Default settings
-  Eval: maxFreq = 20000
+    # Default settings
+    Eval: maxFreq = 20000
 EndIf:
 
 # Apply filters based on sample rate
@@ -109,6 +109,56 @@ Channel: all
 GraphicEQ: 20 0; 50 0; 100 0; 200 0; 500 0; 1000 0; 2000 0; 5000 0; 10000 0; 20000 0
 
 # Add your configuration below
+`,
+  },
+  {
+    name: "Headphone EQ",
+    description: "Template for headphone equalization with shelf filters",
+    content: `# =============================================
+#            Headphone EQ Configuration
+# =============================================
+# Created: {{date}}
+
+; Compensate for potential clipping from boosts
+Preamp: -3.5 dB
+
+# ========================
+# Filter Chain Configuration
+# ========================
+; Format:
+; Filter [Number]: ON [Type] Fc [Hz] Gain [dB] [Q/S] [Value]
+; ------------------------------------------
+; LS = Low Shelf | HS = High Shelf | PK = Peak
+; Q = Quality factor (for peaks) | S = Slope (for shelves)
+
+; ------------------------------------------------------------------
+; Bass Management
+; ------------------------------------------------------------------
+
+; Purpose: Bass enhancement
+Filter 1: ON LS Fc 105 Hz Gain 4.5 dB S 0.71
+
+; Purpose: Reduce boxiness in upper bass
+Filter 2: ON PK Fc 250 Hz Gain -3.0 dB Q 1.0
+
+; ------------------------------------------------------------------
+; Midrange Control
+; ------------------------------------------------------------------
+
+; Purpose: Enhance vocal clarity
+Filter 3: ON PK Fc 1200 Hz Gain 2.0 dB Q 1.4
+
+; Purpose: Reduce harshness
+Filter 4: ON PK Fc 3500 Hz Gain -1.5 dB Q 2.0
+
+; ------------------------------------------------------------------
+; Treble Management
+; ------------------------------------------------------------------
+
+; Purpose: Add "air" and sparkle
+Filter 5: ON HS Fc 10000 Hz Gain 1.5 dB S 0.71
+
+# Add your custom adjustments below
 `,
   },
 ];

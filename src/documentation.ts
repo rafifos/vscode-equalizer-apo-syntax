@@ -1,6 +1,6 @@
 // Documentation for filter types
 export const filterTypes: Record<string, string> = {
-  PK: `**Peaking Filter (Parametric EQ)**
+  "PK": `**Peaking Filter (Parametric EQ)**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
@@ -11,7 +11,7 @@ Example: \`ON PK Fc 50.0 Hz Gain -10.0 dB Q 2.50\`
 
 Creates a bell-shaped boost or cut at the specified frequency.`,
 
-  Modal: `**Modal Filter**
+  "Modal": `**Modal Filter**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
@@ -23,7 +23,7 @@ Example: \`ON Modal Fc 100 Hz Gain 3.0 dB Q 5.41 T60 target 100 ms\`
 
 Special type of peaking filter for modal resonance control.`,
 
-  PEQ: `**Parametric EQ Filter**
+  "PEQ": `**Parametric EQ Filter**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
@@ -34,7 +34,7 @@ Example: \`ON PEQ Fc 100 Hz Gain 1.0 dB BW Oct 0.167\`
 
 Parametric EQ using bandwidth instead of Q factor.`,
 
-  LP: `**Low-Pass Filter**
+  "LP": `**Low-Pass Filter**
 
 Parameters:
 - Fc: Cutoff frequency (Hz) - Required
@@ -43,7 +43,7 @@ Example: \`ON LP Fc 8000 Hz\`
 
 Attenuates frequencies above the cutoff frequency.`,
 
-  LPQ: `**Low-Pass Filter with Q**
+  "LPQ": `**Low-Pass Filter with Q**
 
 Parameters:
 - Fc: Cutoff frequency (Hz) - Required
@@ -53,7 +53,7 @@ Example: \`ON LPQ Fc 10000 Hz Q 0.400\`
 
 Low-pass filter with adjustable Q factor.`,
 
-  HP: `**High-Pass Filter**
+  "HP": `**High-Pass Filter**
 
 Parameters:
 - Fc: Cutoff frequency (Hz) - Required
@@ -62,7 +62,7 @@ Example: \`ON HP Fc 30.0 Hz\`
 
 Attenuates frequencies below the cutoff frequency.`,
 
-  HPQ: `**High-Pass Filter with Q**
+  "HPQ": `**High-Pass Filter with Q**
 
 Parameters:
 - Fc: Cutoff frequency (Hz) - Required
@@ -72,7 +72,7 @@ Example: \`ON HPQ Fc 20.0 Hz Q 0.500\`
 
 High-pass filter with adjustable Q factor.`,
 
-  BP: `**Band-Pass Filter**
+  "BP": `**Band-Pass Filter**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
@@ -82,17 +82,19 @@ Example: \`ON BP Fc 1000 Hz Q 0.100\`
 
 Passes frequencies within a certain range and attenuates frequencies outside that range.`,
 
-  LS: `**Low-Shelf Filter**
+  "LS": `**Low-Shelf Filter**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
 - Gain: Gain value (dB) - Required
+- S: Slope value - Optional (alternative to Q)
 
 Example: \`ON LS Fc 300 Hz Gain 5.0 dB\`
+Example with slope: \`ON LS Fc 300 Hz Gain 5.0 dB S 0.71\`
 
-Boosts or cuts frequencies below the center frequency.`,
+Boosts or cuts frequencies below the center frequency. The slope parameter (S) controls the steepness of the transition (0.71 = standard 1st order).`,
 
-  LSC: `**Low-Shelf Filter with Center Frequency**
+  "LSC": `**Low-Shelf Filter with Center Frequency**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
@@ -100,20 +102,23 @@ Parameters:
 - Q: Q value - Optional
 
 Example: \`ON LSC Fc 300 Hz Gain 5.0 dB Q 0.6473\`
+Example with dB/oct: \`ON LSC 10.8 dB Fc 300 Hz Gain 5.0 dB\`
 
-Low-shelf filter with adjustable Q factor.`,
+Low-shelf filter with adjustable Q factor or dB per octave specification.`,
 
-  HS: `**High-Shelf Filter**
+  "HS": `**High-Shelf Filter**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
 - Gain: Gain value (dB) - Required
+- S: Slope value - Optional (alternative to Q)
 
 Example: \`ON HS Fc 1000 Hz Gain -3.0 dB\`
+Example with slope: \`ON HS Fc 1000 Hz Gain -3.0 dB S 0.71\`
 
-Boosts or cuts frequencies above the center frequency.`,
+Boosts or cuts frequencies above the center frequency. The slope parameter (S) controls the steepness of the transition (0.71 = standard 1st order).`,
 
-  HSC: `**High-Shelf Filter with Center Frequency**
+  "HSC": `**High-Shelf Filter with Center Frequency**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
@@ -121,8 +126,9 @@ Parameters:
 - Q: Q value - Optional
 
 Example: \`ON HSC Fc 100 Hz Gain -6.0 dB Q 0.4272\`
+Example with dB/oct: \`ON HSC 6 dB Fc 100 Hz Gain -6.0 dB\`
 
-High-shelf filter with adjustable Q factor.`,
+High-shelf filter with adjustable Q factor or dB per octave specification.`,
 
   "LS 6dB": `**Low-Shelf Filter (6 dB/octave)**
 
@@ -164,7 +170,7 @@ Example: \`ON HS 12dB Fc 500 Hz Gain 5.0 dB\`
 
 High-shelf filter with 12 dB per octave slope.`,
 
-  NO: `**Notch Filter**
+  "NO": `**Notch Filter**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
@@ -174,7 +180,7 @@ Example: \`ON NO Fc 800 Hz\`
 
 Rejects a narrow band of frequencies.`,
 
-  AP: `**All-Pass Filter**
+  "AP": `**All-Pass Filter**
 
 Parameters:
 - Fc: Center frequency (Hz) - Required
@@ -184,7 +190,7 @@ Example: \`ON AP Fc 900 Hz Q 0.707\`
 
 Passes all frequencies but changes the phase relationship.`,
 
-  IIR: `**IIR Filter with Custom Coefficients**
+  "IIR": `**IIR Filter with Custom Coefficients**
 
 Parameters:
 - Order: Filter order - Required
@@ -210,10 +216,14 @@ Example: \`Preamp: -6.5 dB\``,
 Syntax:
 \`Filter <n>: ON <Type> Fc <Frequency> Hz Gain <Gain value> dB Q <Q value>\`
 \`Filter <n>: ON <Type> Fc <Frequency> Hz Gain <Gain value> dB BW Oct <Bandwidth value>\`
+\`Filter <n>: ON <Type> Fc <Frequency> Hz Gain <Gain value> dB S <Slope value>\`
 
-Adds a filter of the specified type with the specified frequency, gain and Q / bandwidth. The filter number (n) is not interpreted and can be omitted.
+Adds a filter of the specified type with the specified frequency, gain and Q / bandwidth / slope. The filter number (n) is not interpreted and can be omitted.
 
-Example: \`Filter 1: ON PK Fc 1000 Hz Gain -3.0 dB Q 1.41\``,
+For shelf filters (LS, HS), you can use the S parameter instead of Q to specify the slope (0.71 = standard 1st order).
+
+Example: \`Filter 1: ON PK Fc 1000 Hz Gain -3.0 dB Q 1.41\`
+Example with slope: \`Filter 2: ON LS Fc 105 Hz Gain 5.5 dB S 0.71\``,
 
   Delay: `**Delay Command**
 
@@ -336,6 +346,50 @@ Evaluates the expression without using its result any further. It is mainly usef
 Example: \`Eval: a=0; b=pi\``,
 };
 
+// Documentation for filter parameters
+export const filterParameters: Record<string, string> = {
+  "Fc": `**Center/Cutoff Frequency (Fc)**
+
+The center or cutoff frequency of the filter in Hz. This is the frequency at which the filter has its maximum effect.
+
+Example: \`Fc 1000 Hz\``,
+
+  "Gain": `**Gain**
+
+The amount of boost or cut applied by the filter, measured in decibels (dB). Positive values boost the frequency, negative values cut it.
+
+Example: \`Gain 3.0 dB\``,
+
+  "Q": `**Quality Factor (Q)**
+
+Controls the width of the filter. Higher Q values create narrower filters affecting a smaller range of frequencies. Lower Q values create wider filters affecting a broader range of frequencies.
+
+Typical values:
+- 0.7: Very wide (about 2 octaves)
+- 1.4: Medium width (about 1 octave)
+- 4.3: Narrow (about 1/3 octave)
+
+Example: \`Q 1.41\``,
+
+  "BW Oct": `**Bandwidth in Octaves (BW Oct)**
+
+An alternative way to specify filter width, measured in octaves. This is used instead of Q in some filter types.
+
+Example: \`BW Oct 0.167\``,
+
+  "S": `**Slope (S)**
+
+Used with shelf filters to control the steepness of the transition. A value of 0.71 is equivalent to a standard 1st order filter.
+
+Example: \`S 0.71\``,
+
+  "T60 target": `**T60 Target**
+
+Used with Modal filters to specify the decay time in milliseconds.
+
+Example: \`T60 target 100 ms\``,
+};
+
 // Documentation for constants
 export const constants: Record<string, string> = {
   e: `**Mathematical Constant e**
@@ -449,15 +503,15 @@ Returns true if the left operand is less than or equal to the right operand.`,
 
 Returns true if the left operand is greater than or equal to the right operand.`,
 
-  and: `**Logical AND Operator**
+  "and": `**Logical AND Operator**
 
 Returns true if both operands are true.`,
 
-  or: `**Logical OR Operator**
+  "or": `**Logical OR Operator**
 
 Returns true if either operand is true.`,
 
-  xor: `**Logical XOR Operator**
+  "xor": `**Logical XOR Operator**
 
 Returns true if exactly one of the operands is true.`,
 

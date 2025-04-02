@@ -1,8 +1,15 @@
-import * as fs from "fs";
-import * as path from "path";
 import * as vscode from "vscode";
-import { constants, commands, filterTypes, functions, operators } from "./documentation";
-import { getTemplateContent, templates } from "./config-templates";
+import * as path from "path";
+import * as fs from "fs";
+import { templates, getTemplateContent } from "./config-templates";
+import {
+  filterTypes,
+  commands,
+  constants,
+  operators,
+  functions,
+  filterParameters,
+} from "./documentation";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("Equalizer APO Syntax Highlighter is now active");
@@ -14,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
       const workspaceFolders = vscode.workspace.workspaceFolders;
       if (!workspaceFolders) {
         vscode.window.showErrorMessage(
-          "Please open a folder first to create a new Equalizer APO configuration file.",
+          "Please open a folder first to create a new Equalizer APO configuration file."
         );
         return;
       }
@@ -46,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const filePath = path.join(
-        workspaceFolders?.[0]?.uri.fsPath || "",
+        workspaceFolders[0]?.uri.fsPath || "",
         fileName.endsWith(".txt") ? fileName : `${fileName}.txt`
       );
 
@@ -55,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
         const overwrite = await vscode.window.showWarningMessage(
           `File ${fileName} already exists. Do you want to overwrite it?`,
           "Yes",
-          "No",
+          "No"
         );
         if (overwrite !== "Yes") {
           return;
@@ -72,9 +79,9 @@ export function activate(context: vscode.ExtensionContext) {
       await vscode.window.showTextDocument(document);
 
       vscode.window.showInformationMessage(
-        `Created new Equalizer APO configuration file: ${fileName}`,
+        `Created new Equalizer APO configuration file: ${fileName}`
       );
-    },
+    }
   );
 
   // Register a hover provider for filter types, commands, and expressions
@@ -92,6 +99,13 @@ export function activate(context: vscode.ExtensionContext) {
       if (/^\s*Filter(?:\s+\d+)?\s*:\s*ON\s+\w+/.test(line)) {
         if (filterTypes[word]) {
           return new vscode.Hover(new vscode.MarkdownString(filterTypes[word]));
+        }
+      }
+
+      // Check for filter parameters
+      if (/^\s*Filter(?:\s+\d+)?\s*:\s*ON\s+/.test(line)) {
+        if (filterParameters[word]) {
+          return new vscode.Hover(new vscode.MarkdownString(filterParameters[word]));
         }
       }
 
@@ -148,32 +162,34 @@ export function activate(context: vscode.ExtensionContext) {
           // Add appropriate snippet based on filter type
           if (type === "PK" || type === "Modal" || type === "PEQ") {
             item.insertText = new vscode.SnippetString(
-              `${type} Fc \${1:1000} Hz Gain \${2:0.0} dB Q \${3:1.41}`,
+              `${type} Fc \${1:1000} Hz Gain \${2:0.0} dB Q \${3:1.41}`
             );
           } else if (type === "LP" || type === "HP") {
             item.insertText = new vscode.SnippetString(`${type} Fc \${1:1000} Hz`);
           } else if (type === "LPQ" || type === "HPQ" || type === "BP" || type === "AP") {
             item.insertText = new vscode.SnippetString(`${type} Fc \${1:1000} Hz Q \${2:0.707}`);
+          } else if (type === "LS" || type === "HS") {
+            item.insertText = new vscode.SnippetString(
+              `${type} Fc \${1:1000} Hz Gain \${2:0.0} dB S \${3:0.71}`
+            );
           } else if (
-            type === "LS" ||
-            type === "HS" ||
             type === "LS 6dB" ||
             type === "LS 12dB" ||
             type === "HS 6dB" ||
             type === "HS 12dB"
           ) {
             item.insertText = new vscode.SnippetString(
-              `${type} Fc \${1:1000} Hz Gain \${2:0.0} dB`,
+              `${type} Fc \${1:1000} Hz Gain \${2:0.0} dB`
             );
           } else if (type === "NO") {
             item.insertText = new vscode.SnippetString(`${type} Fc \${1:1000} Hz`);
           } else if (type === "LSC" || type === "HSC") {
             item.insertText = new vscode.SnippetString(
-              `${type} Fc \${1:1000} Hz Gain \${2:0.0} dB Q \${3:0.707}`,
+              `${type} Fc \${1:1000} Hz Gain \${2:0.0} dB Q \${3:0.707}`
             );
           } else if (type === "IIR") {
             item.insertText = new vscode.SnippetString(
-              `${type} Order \${1:2} Coefficients \${2:0.0} \${3:0.0} \${4:0.0} \${5:1.0} \${6:0.0} \${7:0.0}`,
+              `${type} Order \${1:2} Coefficients \${2:0.0} \${3:0.0} \${4:0.0} \${5:1.0} \${6:0.0} \${7:0.0}`
             );
           }
 
@@ -181,6 +197,90 @@ export function activate(context: vscode.ExtensionContext) {
         });
 
         return filterTypeItems;
+      }
+
+      // Provide filter parameter completions after filter type
+      if (/^\s*Filter(?:\s+\d+)?\s*:\s*ON\s+\w+\s+/.test(linePrefix)) {
+        // Check if we're in a position to add a parameter
+        const lastWord = linePrefix.trim().split(/\s+/).pop() || "";
+
+        // Don't suggest parameters if we're in the middle of one
+        if (/^(Fc|Gain|Q|BW|S|Order|Coefficients|T60)$/.test(lastWord)) {
+          return undefined;
+        }
+
+        // Check what parameters are already in the line to avoid duplicates
+        const hasFC = linePrefix.includes("Fc");
+        const hasGain = linePrefix.includes("Gain");
+        const hasQ = linePrefix.includes("Q");
+        const hasBW = linePrefix.includes("BW");
+        const hasS = linePrefix.includes("S");
+
+        const paramItems: vscode.CompletionItem[] = [];
+
+        // Add Fc parameter if not already present
+        if (!hasFC) {
+          const fcItem = new vscode.CompletionItem("Fc", vscode.CompletionItemKind.Property);
+          fcItem.documentation = new vscode.MarkdownString(filterParameters["Fc"]);
+          fcItem.insertText = new vscode.SnippetString("Fc ${1:1000} Hz ");
+          paramItems.push(fcItem);
+        }
+
+        // Add Gain parameter if not already present
+        if (
+          !hasGain &&
+          !/^\s*Filter(?:\s+\d+)?\s*:\s*ON\s+(LP|HP|LPQ|HPQ|BP|NO|AP)\s+/.test(linePrefix)
+        ) {
+          const gainItem = new vscode.CompletionItem("Gain", vscode.CompletionItemKind.Property);
+          gainItem.documentation = new vscode.MarkdownString(filterParameters["Gain"]);
+          gainItem.insertText = new vscode.SnippetString("Gain ${1:0.0} dB ");
+          paramItems.push(gainItem);
+        }
+
+        // Add Q parameter if not already present and not conflicting with BW or S
+        if (!hasQ && !hasBW && !hasS) {
+          const qItem = new vscode.CompletionItem("Q", vscode.CompletionItemKind.Property);
+          qItem.documentation = new vscode.MarkdownString(filterParameters["Q"]);
+          qItem.insertText = new vscode.SnippetString("Q ${1:1.41} ");
+          paramItems.push(qItem);
+        }
+
+        // Add BW parameter if not already present and not conflicting with Q or S
+        if (!hasBW && !hasQ && !hasS) {
+          const bwItem = new vscode.CompletionItem("BW Oct", vscode.CompletionItemKind.Property);
+          bwItem.documentation = new vscode.MarkdownString(filterParameters["BW Oct"]);
+          bwItem.insertText = new vscode.SnippetString("BW Oct ${1:0.167} ");
+          paramItems.push(bwItem);
+        }
+
+        // Add S parameter for shelf filters if not already present and not conflicting with Q or BW
+        if (
+          !hasS &&
+          !hasQ &&
+          !hasBW &&
+          /^\s*Filter(?:\s+\d+)?\s*:\s*ON\s+(LS|HS)\s+/.test(linePrefix)
+        ) {
+          const sItem = new vscode.CompletionItem("S", vscode.CompletionItemKind.Property);
+          sItem.documentation = new vscode.MarkdownString(filterParameters["S"]);
+          sItem.insertText = new vscode.SnippetString("S ${1:0.71} ");
+          paramItems.push(sItem);
+        }
+
+        // Add T60 target parameter for Modal filters
+        if (
+          /^\s*Filter(?:\s+\d+)?\s*:\s*ON\s+Modal\s+/.test(linePrefix) &&
+          !linePrefix.includes("T60")
+        ) {
+          const t60Item = new vscode.CompletionItem(
+            "T60 target",
+            vscode.CompletionItemKind.Property
+          );
+          t60Item.documentation = new vscode.MarkdownString(filterParameters["T60 target"]);
+          t60Item.insertText = new vscode.SnippetString("T60 target ${1:100} ms ");
+          paramItems.push(t60Item);
+        }
+
+        return paramItems;
       }
 
       // Provide channel completions after "Channel:"
@@ -260,7 +360,7 @@ export function activate(context: vscode.ExtensionContext) {
             item.insertText = new vscode.SnippetString(`${name}("\${1:pattern}", \${2:string})`);
           } else if (name === "regexReplace") {
             item.insertText = new vscode.SnippetString(
-              `${name}("\${1:pattern}", \${2:string}, "\${3:replacement}")`,
+              `${name}("\${1:pattern}", \${2:string}, "\${3:replacement}")`
             );
           } else if (name === "readRegString" || name === "readRegDWORD") {
             item.insertText = new vscode.SnippetString(`${name}("\${1:key}", "\${2:value}")`);
@@ -295,7 +395,7 @@ export function activate(context: vscode.ExtensionContext) {
           const text = line.text;
 
           // Skip empty lines and comments
-          if (text.trim() === "" || text.trim().startsWith("#")) {
+          if (text.trim() === "" || text.trim().startsWith("#") || text.trim().startsWith(";")) {
             continue;
           }
 
@@ -317,8 +417,8 @@ export function activate(context: vscode.ExtensionContext) {
               edits.push(
                 vscode.TextEdit.replace(
                   new vscode.Range(i, 0, i, currentIndent.length),
-                  desiredIndent,
-                ),
+                  desiredIndent
+                )
               );
             }
 
@@ -331,7 +431,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         return edits;
       },
-    },
+    }
   );
 
   // Register a semantic token provider to highlight invalid lines as comments
@@ -346,7 +446,7 @@ export function activate(context: vscode.ExtensionContext) {
           const text = line.text.trim();
 
           // Skip empty lines and explicit comments
-          if (text === "" || text.startsWith("#")) {
+          if (text === "" || text.startsWith("#") || text.startsWith(";")) {
             continue;
           }
 
@@ -362,7 +462,7 @@ export function activate(context: vscode.ExtensionContext) {
         return builder.build();
       },
     },
-    new vscode.SemanticTokensLegend(["comment"]),
+    new vscode.SemanticTokensLegend(["comment"])
   );
 
   context.subscriptions.push(
@@ -370,7 +470,7 @@ export function activate(context: vscode.ExtensionContext) {
     hoverProvider,
     completionProvider,
     formattingProvider,
-    tokenProvider,
+    tokenProvider
   );
 }
 

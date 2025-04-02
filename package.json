@@ -2,7 +2,7 @@
   "name": "equalizer-apo-syntax",
   "displayName": "Equalizer APO Syntax",
   "description": "Syntax highlighting for Equalizer APO configuration files",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "rafifos",
   "engines": {
     "vscode": "^1.60.0"
