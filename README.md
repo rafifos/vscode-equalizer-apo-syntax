@@ -2,8 +2,6 @@
 
 This extension provides syntax highlighting for Equalizer APO configuration files, making it easier to read and edit your audio processing configurations.
 
-![Syntax Highlighting Example](images/syntax-example.png)
-
 ## Features
 
 - Comprehensive syntax highlighting for all Equalizer APO commands
